@@ -36,15 +36,6 @@ from google.appengine.api import users
 from google.appengine.ext import ndb
 
 class CssiUser(ndb.Model):
-  """CssiUser stores information about a logged-in user.
-
-  The AppEngine users api stores just a couple of pieces of
-  info about logged-in users: a unique id and their email address.
-
-  If you want to store more info (e.g. their real name, high score,
-  preferences, etc, you need to create a Datastore model like this
-  example).
-  """
   first_name = ndb.StringProperty()
   last_name = ndb.StringProperty()
 
@@ -96,6 +87,15 @@ class MainHandler(webapp2.RequestHandler):
     self.response.write('Thanks for signing up, %s!' %
         cssi_user.first_name)
 
+class ProfileHandler(webapp2.RequestHandler):
+    def get(self):
+
+
+
+
+
+
 app = webapp2.WSGIApplication([
   ('/', MainHandler)
+  ('/makeprofile', ProfileHandler)
 ], debug=True)
