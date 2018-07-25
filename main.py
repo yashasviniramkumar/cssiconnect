@@ -22,6 +22,7 @@ class CssiUser(ndb.Model):
   twitter=ndb.StringProperty(required=False)
   linkedin=ndb.StringProperty(required=False)
 
+
 class MainHandler(webapp2.RequestHandler):
   def get(self):
     user = users.get_current_user()
@@ -85,7 +86,7 @@ class CreateProfileHandler(webapp2.RequestHandler):
 
 class ProfileHandler(webapp2.RequestHandler):
     def get(self):
-        p_template=jinja_env.get_template('beta1.html')
+        p_template=jinja_env.get_template('profilepage.html')
         user = users.get_current_user()
         cssi_user = CssiUser.get_by_id(user.user_id())
         cssi_user.bio= self.request.get('bio')

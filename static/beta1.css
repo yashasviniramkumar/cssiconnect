@@ -1,5 +1,11 @@
 body {
   background:#ddd;
+  font-family: "Montserrat";
+}
+
+p {
+  font-family: "Montserrat";
+  font-size:80px;
 }
 .box {
   width:30%;
@@ -21,13 +27,14 @@ body {
 .profile img {
   positon:relative;
   width:90%;
-  border:8px solid #00a5a6;
+  /* border:8px solid #00a5a6; */
+  border:3px solid grey;
   border-radius:50%;
   margin:0 auto;
 }
 h2 {
   color:#fff;
-  background:#2c3;
+  background:grey;
   text-align:center;
   margin-top:-5px;
   padding:10px 0;
@@ -41,7 +48,8 @@ p {
 }
 .social{
   padding:10px 0;
-  background:#ffe999;
+  /* background:#ffe999; */
+  background: grey;
   width:100%;
 }
 .social a img {
