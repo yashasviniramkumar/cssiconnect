@@ -109,8 +109,7 @@ class ProfileHandler(webapp2.RequestHandler):
         'lastName': cssi_user.last_name,
         'college':cssi_user.college,
         'fb':cssi_user.fb,
-        'insta':cssi_user.insta,
-        ''
+        'insta':cssi_user.insta
         })
         self.response.write(html)
 
@@ -168,6 +167,8 @@ class PostHandler(webapp2.RequestHandler):
     cssi_user.put()
     self.response.write('Thanks for signing up, %s!' %
         cssi_user.first_name)
+
+
 
 
 app = webapp2.WSGIApplication([
