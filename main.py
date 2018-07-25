@@ -8,6 +8,7 @@ from google.appengine.api import users
 from google.appengine.ext import ndb
 
 
+
 jinja_env = jinja2.Environment(
     loader = jinja2.FileSystemLoader(os.path.dirname(__file__)),
 )
@@ -63,8 +64,7 @@ class MainHandler(webapp2.RequestHandler):
       return
     cssi_user = CssiUser(
         first_name=self.request.get('first_name'),
-        last_name=self.request.get('last_name')
-        ,
+        last_name=self.request.get('last_name'),
         id=user.user_id())
     cssi_user.put()
     signup_template=jinja_env.get_template('signup.html')
@@ -111,4 +111,55 @@ app = webapp2.WSGIApplication([
   ('/', MainHandler),
   ('/createprofile', CreateProfileHandler),
   ('/profile', ProfileHandler)
+        })
+        self.response.write(html)
+
+
+
+
+
+
+
+
+class PostHandler(webapp2.RequestHandler):
+    def post(self):
+        post_data = self.request.get("Post Box")
+        user_email= self.request.get("email_address")
+        post_box= PostData(email_address = user_email, text= post_data, time= datetime.datetime.now())
+        post_box.put()
+    def get (self):
+
+
+
+class PostData(ndb.Model):
+    email_address = ndb.StringProperty()
+    text = ndb.StringProperty()
+    time = ndb.DateProperty()
+
+class ListPostsHandler(webapp2.RequestHandler):
+    def get(self):
+        all_posts_query = PostData.query()
+        all_posts = all_posts_query.fetch()
+        for post in all_posts:
+            self.response.out.write(post.email_address + post.text + str(post.time))
+            self.response.out.write('<br>')
+
+
+
+
+
+
+    # save to to MainHandl
+        # add timestamp
+
+
+
+
+app = webapp2.WSGIApplication([
+  ('/', MainHandler),
+  ('/createprofile', CreateProfileHandler),
+  ('/profile', ProfileHandler),
+  ('/postbox', PostHandler),
+  ('/listposts', ListPostsHandler),
+>>>>>>> 87415cdad4ec84a460fdfbac084ce5f0e954cb1d
 ], debug=True)

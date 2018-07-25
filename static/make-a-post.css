@@ -1,0 +1,18 @@
+.PostBox{
+  height: 150px;
+  width: 350px;
+  font-size: 14pt;
+}
+.PostHeader{
+  margin-right:0px;
+  float:center;
+  color:red;
+}
+
+.PostButton{
+  margin-right:25px;
+  float:right;
+  height: 60px;
+  width: 90px;
+  font-size: 25pt
+}
