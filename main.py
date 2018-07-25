@@ -94,7 +94,7 @@ class CreateProfileHandler(webapp2.RequestHandler):
 
 class ProfileHandler(webapp2.RequestHandler):
     def get(self):
-        p_template=jinja_env.get_template('beta1.html')
+        p_template=jinja_env.get_template('profilepage.html')
         user = users.get_current_user()
         cssi_user = CssiUser.get_by_id(user.user_id())
         cssi_user.bio= self.request.get('bio')
@@ -109,7 +109,11 @@ class ProfileHandler(webapp2.RequestHandler):
         'lastName': cssi_user.last_name,
         'college':cssi_user.college,
         'fb':cssi_user.fb,
+<<<<<<< HEAD
         'insta':cssi_user.insta,
+=======
+        'insta':cssi_user.insta
+>>>>>>> 4662297d8a960cf32579731d0072ff224d098519
         })
         self.response.write(html)
 
@@ -150,6 +154,8 @@ class ListPostsHandler(webapp2.RequestHandler):
 
     # save to to MainHandl
         # add timestamp
+
+
 
 
 app = webapp2.WSGIApplication([
