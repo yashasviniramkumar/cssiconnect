@@ -109,11 +109,7 @@ class ProfileHandler(webapp2.RequestHandler):
         'lastName': cssi_user.last_name,
         'college':cssi_user.college,
         'fb':cssi_user.fb,
-<<<<<<< HEAD
         'insta':cssi_user.insta,
-=======
-        'insta':cssi_user.insta
->>>>>>> 4662297d8a960cf32579731d0072ff224d098519
         })
         self.response.write(html)
 
