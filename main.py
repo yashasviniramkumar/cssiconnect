@@ -9,6 +9,7 @@ from google.appengine.api import users
 from google.appengine.ext import ndb
 
 
+
 jinja_env = jinja2.Environment(
     loader = jinja2.FileSystemLoader(os.path.dirname(__file__)),
 )
@@ -71,8 +72,7 @@ class MainHandler(webapp2.RequestHandler):
       return
     cssi_user = CssiUser(
         first_name=self.request.get('first_name'),
-        last_name=self.request.get('last_name')
-        ,
+        last_name=self.request.get('last_name'),
         id=user.user_id())
     cssi_user.put()
     signup_template=jinja_env.get_template('signup.html')
@@ -110,7 +110,6 @@ class ProfileHandler(webapp2.RequestHandler):
         'college':cssi_user.college,
         'fb':cssi_user.fb,
         'insta':cssi_user.insta,
-        ''
         })
         self.response.write(html)
 
@@ -122,57 +121,41 @@ class ProfileHandler(webapp2.RequestHandler):
 
 
 class PostHandler(webapp2.RequestHandler):
-  def get(self):
-    user = users.get_current_user()
-    # If the user is logged in...
-    if user:
-      email_address = user.nickname()
-      cssi_user = CssiUser.get_by_id(user.user_id())
-      signout_link_html = '<a href="%s">sign out</a>' % (
-          users.create_logout_url('/'))
-      # If the user has previously been to our site, we greet them!
-      if cssi_user:
-        self.response.write('''
-            Welcome %s %s (%s)! <br> %s <br>''' % (
-              cssi_user.first_name,
-              cssi_user.last_name,
-              email_address,
-              signout_link_html))
-      # If the user hasn't been to our site, we ask them to sign up
-      else:
-        self.response.write('''
-            Welcome to our site, %s!  Please sign up! <br>
-            <form method="post" action="/">
-            <input type="text" name="first_name">
-            <input type="text" name="last_name">
-            <input type="submit">
-            </form><br> %s <br>
-            ''' % (email_address, signout_link_html))
-    # Otherwise, the user isn't logged in!
-    else:
-      self.response.write('''
-        Please log in to use our site! <br>
-        <a href="%s">Sign in</a>''' % (
-          users.create_login_url('/')))
+    def post(self):
+        post_data = self.request.get("Post Box")
+        user_email= self.request.get("email_address")
+        post_box= PostData(email_address = user_email, text= post_data, time= datetime.datetime.now())
+        post_box.put()
+    def get (self):
 
-  def post(self):
-    user = users.get_current_user()
-    if not user:
-      # You shouldn't be able to get here without being logged in
-      self.error(500)
-      return
-    cssi_user = CssiUser(
-        first_name=self.request.get('first_name'),
-        last_name=self.request.get('last_name'),
-        id=user.user_id())
-    cssi_user.put()
-    self.response.write('Thanks for signing up, %s!' %
-        cssi_user.first_name)
+
+
+class PostData(ndb.Model):
+    email_address = ndb.StringProperty()
+    text = ndb.StringProperty()
+    time = ndb.DateProperty()
+
+class ListPostsHandler(webapp2.RequestHandler):
+    def get(self):
+        all_posts_query = PostData.query()
+        all_posts = all_posts_query.fetch()
+        for post in all_posts:
+            self.response.out.write(post.email_address + post.text + str(post.time))
+            self.response.out.write('<br>')
+
+
+
+
+
+
+    # save to to MainHandl
+        # add timestamp
 
 
 app = webapp2.WSGIApplication([
   ('/', MainHandler),
   ('/createprofile', CreateProfileHandler),
   ('/profile', ProfileHandler),
-  ('/postpage', PostHandler),
+  ('/postbox', PostHandler),
+  ('/listposts', ListPostsHandler),
 ], debug=True)
