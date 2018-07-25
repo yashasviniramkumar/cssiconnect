@@ -1,43 +1,28 @@
-"""Simple example app to demonstrate storing info for users.
 
-CSSI-ers!  If you want to have users log in to your site and store
-info about them, here is a simple AppEngine app demonstrating
-how to do that.  The typical usage is:
 
-- First, user visits the site, and sees a message to log in.
-- The user follows the link to the Google login page, and logs in.
-- The user is redirected back to your app's signup page to sign
-  up.
-- The user then gets a page thanking them for signup.
-
-- In the future, whenever the user is logged in, they'll see a
-  message greeting them by name.
-
-Try logging out and logging back in with a fake email address
-to create a different account (when you "log in" running your
-local server, it doesn't ask for a password, and you can make
-up whatever email you like).
-
-The key piece that makes all of this work is tying the datastore
-entity to the AppEngine user id, by passing the special property
-id when creating the datastore entity.
-
-cssi_user = CssiUser(..., id=user.user_id())
-cssi_user.put()
-
-and then, looking it up later by doing
-
-cssi_user = CssiUser.get_by_id(user.user_id())
-"""
-
+import jinja2
+import os
 import webapp2
 
 from google.appengine.api import users
 from google.appengine.ext import ndb
 
+
+jinja_env = jinja2.Environment(
+    loader = jinja2.FileSystemLoader(os.path.dirname(__file__)),
+)
+
 class CssiUser(ndb.Model):
   first_name = ndb.StringProperty()
   last_name = ndb.StringProperty()
+  bio=ndb.StringProperty(required=False)
+  college=ndb.StringProperty(required=False)
+  fb=ndb.StringProperty(required=False)
+  insta=ndb.StringProperty(required=False)
+  twitter=ndb.StringProperty(required=False)
+  linkedin=ndb.StringProperty(required=False)
+
+
 
 class MainHandler(webapp2.RequestHandler):
   def get(self):
@@ -59,19 +44,23 @@ class MainHandler(webapp2.RequestHandler):
       # If the user hasn't been to our site, we ask them to sign up
       else:
         self.response.write('''
-            Welcome to our site, %s!  Please sign up! <br>
+            <div style= "color:blue" >Welcome to our site, %s!  Please sign up! </div><br>
             <form method="post" action="/">
             <input type="text" name="first_name">
             <input type="text" name="last_name">
             <input type="submit">
             </form><br> %s <br>
             ''' % (email_address, signout_link_html))
-    # Otherwise, the user isn't logged in!
+
+
+
     else:
       self.response.write('''
-        Please log in to use our site! <br>
+        <div style="color:blue">Please log in to use our site! </div> <br>
         <a href="%s">Sign in</a>''' % (
           users.create_login_url('/')))
+
+
 
   def post(self):
     user = users.get_current_user()
@@ -81,14 +70,50 @@ class MainHandler(webapp2.RequestHandler):
       return
     cssi_user = CssiUser(
         first_name=self.request.get('first_name'),
-        last_name=self.request.get('last_name'),
+        last_name=self.request.get('last_name')
+        ,
         id=user.user_id())
     cssi_user.put()
-    self.response.write('Thanks for signing up, %s!' %
-        cssi_user.first_name)
+    signup_template=jinja_env.get_template('signup.html')
+    html= signup_template.render({
+    'first_name' : cssi_user.first_name
+    })
+    self.response.write(html)
+
+
+    # self.response.write('Thanks for signing up, %s!' %
+    #     cssi_user.first_name)
+
+class CreateProfileHandler(webapp2.RequestHandler):
+    def get(self):
+        profile_template= jinja_env.get_template('form-profile.html')
+        html=profile_template.render({})
+        self.response.write(html)
+        webapp2.redirect('/profile')
 
 class ProfileHandler(webapp2.RequestHandler):
     def get(self):
+        p_template=jinja_env.get_template('beta1.html')
+        user = users.get_current_user()
+        cssi_user = CssiUser.get_by_id(user.user_id())
+        cssi_user.bio= self.request.get('bio')
+        cssi_user.college=self.request.get('college')
+        cssi_user.fb=self.request.get('fb')
+        cssi_user.insta=self.request.get('insta')
+        cssi_user.twitter=self.request.get('twitter')
+        
+        cssi_user.put()
+        html=p_template.render({
+        'firstName':cssi_user.first_name ,
+        'lastName': cssi_user.last_name,
+        'college':cssi_user.college,
+        'fb':cssi_user.fb,
+        'insta':cssi_user.insta,
+        ''
+        })
+        self.response.write(html)
+
+
 
 
 
@@ -96,6 +121,7 @@ class ProfileHandler(webapp2.RequestHandler):
 
 
 app = webapp2.WSGIApplication([
-  ('/', MainHandler)
-  ('/makeprofile', ProfileHandler)
+  ('/', MainHandler),
+  ('/createprofile', CreateProfileHandler),
+  ('/profile', ProfileHandler)
 ], debug=True)
