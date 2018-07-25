@@ -22,8 +22,6 @@ class CssiUser(ndb.Model):
   twitter=ndb.StringProperty(required=False)
   linkedin=ndb.StringProperty(required=False)
 
-
-
 class MainHandler(webapp2.RequestHandler):
   def get(self):
     user = users.get_current_user()
@@ -35,24 +33,18 @@ class MainHandler(webapp2.RequestHandler):
           users.create_logout_url('/'))
       # If the user has previously been to our site, we greet them!
       if cssi_user:
-        self.response.write('''
-            Welcome %s %s (%s)! <br> %s <br>''' % (
-              cssi_user.first_name,
-              cssi_user.last_name,
-              email_address,
-              signout_link_html))
+        welcome_template = jinja_env.get_template('welcome.html')
+        welcome= welcome_template.render({
+        'firstname' : cssi_user.first_name,
+        'lastname' : cssi_user.last_name ,
+        'signout' : signout_link_html
+        })
+        self.response.write(welcome)
       # If the user hasn't been to our site, we ask them to sign up
       else:
-        self.response.write('''
-            <div style= "color:blue" >Welcome to our site, %s!  Please sign up! </div><br>
-            <form method="post" action="/">
-            <input type="text" name="first_name">
-            <input type="text" name="last_name">
-            <input type="submit">
-            </form><br> %s <br>
-            ''' % (email_address, signout_link_html))
-
-
+        newuser_template = jinja_env.get_template('signup1.html')
+        newuser = newuser_template.render({})
+        self.response.write(newuser)
 
     else:
       self.response.write('''
@@ -101,7 +93,7 @@ class ProfileHandler(webapp2.RequestHandler):
         cssi_user.fb=self.request.get('fb')
         cssi_user.insta=self.request.get('insta')
         cssi_user.twitter=self.request.get('twitter')
-        
+        cssi_user.linkedin = self.request.get('linkedin')
         cssi_user.put()
         html=p_template.render({
         'firstName':cssi_user.first_name ,
@@ -109,16 +101,10 @@ class ProfileHandler(webapp2.RequestHandler):
         'college':cssi_user.college,
         'fb':cssi_user.fb,
         'insta':cssi_user.insta,
-        ''
+        'twitter':cssi_user.twitter,
+        'linkedin': cssi_user.linkedin
         })
         self.response.write(html)
-
-
-
-
-
-
-
 
 app = webapp2.WSGIApplication([
   ('/', MainHandler),
