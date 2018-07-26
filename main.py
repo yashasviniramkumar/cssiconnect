@@ -23,6 +23,10 @@ class CssiUser(ndb.Model):
   insta=ndb.StringProperty(required=False)
   twitter=ndb.StringProperty(required=False)
   linkedin=ndb.StringProperty(required=False)
+  phone=ndb.StringProperty(required=False)
+  hometown=ndb.StringProperty(required=False)
+  job=ndb.StringProperty(required=False)
+  # gplus=ndb.StringProperty(required=False)
 
 class MainHandler(webapp2.RequestHandler):
   def get(self):
@@ -47,7 +51,6 @@ class MainHandler(webapp2.RequestHandler):
         newuser_template = jinja_env.get_template('signup1.html')
         newuser = newuser_template.render({})
         self.response.write(newuser)
-
     else:
       signin_template= jinja_env.get_template('pleasesignup.html')
       signin = signin_template.render({'signin':  users.create_login_url('/') })
@@ -94,6 +97,10 @@ class ProfileHandler(webapp2.RequestHandler):
         cssi_user.insta=self.request.get('insta')
         cssi_user.twitter=self.request.get('twitter')
         cssi_user.linkedin = self.request.get('linkedin')
+        cssi_user.hometown = self.request.get('hometown')
+        cssi_user.phone=self.request.get('phone')
+        cssi_user.job=self.request.get('job')
+        # cssi_user.gplus=self.request.get('gplus')
         cssi_user.put()
         html=p_template.render({
         'firstName':cssi_user.first_name ,
@@ -103,7 +110,11 @@ class ProfileHandler(webapp2.RequestHandler):
         'insta':cssi_user.insta,
         'twitter':cssi_user.twitter,
         'linkedin': cssi_user.linkedin,
-        'bio':cssi_user.bio
+        'bio':cssi_user.bio,
+        'hometown':cssi_user.hometown,
+        'job':cssi_user.job,
+        'phone':cssi_user.phone,
+        # 'gplus': cssi_user.gplus
         })
         self.response.write(html)
 
@@ -122,29 +133,37 @@ class PostHandler(webapp2.RequestHandler):
         post_template= jinja_env.get_template("make-a-post.html")
         posts= post_template.render({})
         post_data = self.request.get("Post Box")
-        user_email= self.request.get("email_address")
+        user_name= self.request.get("fullname")
         time = datetime.now()
-        post_box= PostData(email_address = user_email, text= post_data, time=time)
+        post_box= PostData(fullname = user_name, text= post_data, time=time)
         post_box.put()
         return webapp2.redirect("/listposts")
 
 class PostData(ndb.Model):
-    email_address = ndb.StringProperty(required=True)
+    fullname = ndb.StringProperty(required=True)
     text = ndb.StringProperty(required = True)
     time = ndb.DateTimeProperty(required = True)
 
+
 class ListPostsHandler(webapp2.RequestHandler):
     def get(self):
-        all_posts_query = PostData.query()
+        all_posts_query = PostData.query().order(-PostData.time)
         all_posts = all_posts_query.fetch()
-        for post in all_posts:
-            ctime = '%02d/%02d/%04d %02d:%02d:%02d' % (post.time.month, post.time.day, post.time.year, post.time.hour, post.time.minute, post.time.second)
-            self.response.out.write(post.email_address + "     " + post.text + "     ")
-            self.response.out.write('<br>')
-            self.response.out.write(ctime)
-            self.response.out.write("    ")
-            self.response.out.write('<br>')
-            self.response.out.write('<br>')
+        # for post in all_posts:
+        # ctime = '%02d/%02d/%04d %02d:%02d:%02d' % (post.time.month, post.time.day, post.time.year, post.time.hour, post.time.minute, post.time.second)
+            # self.response.out.write(post.email_address + "     " + post.text + "     ")
+            # self.response.out.write('<br>')
+            # self.response.out.write(ctime)
+            # self.response.out.write("    ")
+            # self.response.out.write('<br>')
+            # self.response.out.write('<br>')
+        listposts_template=jinja_env.get_template('listposts.html')
+        listposts=listposts_template.render({
+            # 'name': post.fullname,
+            # 'thepost': post.text
+            'all_posts':all_posts
+            })
+        self.response.write(listposts)
 
 class MainPageHandler(webapp2.RequestHandler):
     def get(self):

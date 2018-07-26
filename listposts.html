@@ -3,9 +3,20 @@
   <head>
     <title>List of Posts</title>
   </head>
-    <link rel="stylesheet" href="static/listposts.css">
+    <!-- <link rel="stylesheet" href="static/listposts.css"> -->
+    <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
   <body>
-    
-
+      {% for post in all_posts %}
+      <p> Post: {{post.text}} </p>
+    <p> Name: {{post.fullname}} </p> <br>
+      {% endfor %}
+      hi
   </body>
+
+  <style>
+  body{
+    color:purple;
+    font-family: "Montserrat";
+  }
+  </style>
 </html>

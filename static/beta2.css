@@ -1,0 +1,63 @@
+body {
+  background:#ddd;
+  font-family: "Montserrat";
+}
+.box {
+  width:30%;
+  height:auto;
+  background:#fff;
+  margin:0 auto;
+  border-bottom:1px solid #ddd;
+}
+.profile {
+  width:90%;
+  margin:0 auto;
+  padding:20px;
+}
+.profile:after {
+  content:'';
+  padding-bottom:90%;
+  display:blcok;
+}
+.profile img {
+  positon:relative;
+  width:90%;
+  border:3px solid grey;
+  border-radius:50%;
+  margin:0 auto;
+}
+h2 {
+  color:#fff;
+  background:grey;
+  text-align:center;
+  margin-top:-5px;
+  padding:10px 0;
+}
+p {
+  padding:15px 20px;
+  font-family: 'Raleway', sans-serif;
+  font-size:20px;
+  text-align:justify;
+  line-height:1.25;
+  font-family: "Montserrat";
+}
+.social{
+  padding:10px 0;
+  background:grey;
+  width:100%;
+}
+.social a img {
+  border-radius:50%;
+  margin-left:40px;
+  height: 40px;
+  width: auto;
+}
+.profile img {
+  cursor:pointer;
+}
+
+.otherpage {
+  text-align: center;
+  margin: 0 auto;
+  font-size: 15px;
+}
