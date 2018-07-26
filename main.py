@@ -7,6 +7,7 @@ import datetime
 
 from google.appengine.api import users
 from google.appengine.ext import ndb
+from datetime import datetime
 
 
 
@@ -121,37 +122,39 @@ class ProfileHandler(webapp2.RequestHandler):
 
 
 class PostHandler(webapp2.RequestHandler):
+    def get (self):
+        make_a_post_template=jinja_env.get_template('make-a-post.html')
+        html= make_a_post_template.render({
+        })
+        self.response.write(html)
     def post(self):
         post_data = self.request.get("Post Box")
         user_email= self.request.get("email_address")
-        post_box= PostData(email_address = user_email, text= post_data, time= datetime.datetime.now())
-        post_box.put()
-    def get (self):
+        time = datetime.now()
+        # ctime = '%02d/%02d/%04d %02d:%02d:%02d' % (time.month, time.day, time.year, time.hour, time.minute, time.second)
+        post_box= PostData(email_address = user_email, text= post_data, time=time)
 
+
+        # now= datetime.now()
+        # print '%02d/%02d/%04d %02d:%02d:%02d' % (now.month, now.day, now.year, now.hour, now.minute, now.second)
+        post_box.put()
+        return webapp2.redirect("/listposts")
 
 
 class PostData(ndb.Model):
-    email_address = ndb.StringProperty()
-    text = ndb.StringProperty()
-    time = ndb.DateProperty()
+    email_address = ndb.StringProperty(required=True)
+    text = ndb.StringProperty(required = True)
+    time = ndb.DateTimeProperty(required = True)
 
 class ListPostsHandler(webapp2.RequestHandler):
     def get(self):
         all_posts_query = PostData.query()
         all_posts = all_posts_query.fetch()
         for post in all_posts:
-            self.response.out.write(post.email_address + post.text + str(post.time))
+            ctime = '%02d/%02d/%04d %02d:%02d:%02d' % (post.time.month, post.time.day, post.time.year, post.time.hour, post.time.minute, post.time.second)
+            self.response.out.write(post.email_address + "     " + post.text + "     " + ctime)
+
             self.response.out.write('<br>')
-
-
-
-
-
-
-    # save to to MainHandl
-        # add timestamp
-
-
 
 
 app = webapp2.WSGIApplication([

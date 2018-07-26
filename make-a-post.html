@@ -3,17 +3,18 @@
   <head>
     <title>Make a Post</title>
   </head>
-    <link rel="stylesheet" href="make-a-post.css">
+    <link rel="stylesheet" href="static/make-a-post.css">
   <body>
     <div class = "PostHeader">
       <h1> Make a Post</h1> </div>
       <div class ="PostBox">
-      <form>
-        <input name ="email_address" type="text" placeholder="Enter email"></input>
+      <form action="postbox" method="post" >
+        <input name="email_address" type="text" placeholder="Enter email"></input>
+  <!-- add a break -->
         <textarea class="PostBox" name="Post Box"
          placeholder ="Make a post about anything and everything CS!
          Post internships, scholarships and job opportunities. Share projects!"></textarea>
-    
+
 
       <button class= "PostButton" type="submit"> Post</button>
 
