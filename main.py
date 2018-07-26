@@ -49,10 +49,9 @@ class MainHandler(webapp2.RequestHandler):
         self.response.write(newuser)
 
     else:
-      self.response.write('''
-        <div style="color:blue">Please log in to use our site! </div> <br>
-        <a href="%s">Sign in</a>''' % (
-          users.create_login_url('/')))
+      signin_template= jinja_env.get_template('pleasesignup.html')
+      signin = signin_template.render({'signin':  users.create_login_url('/') })
+      self.response.write(signin)
 
 
 
@@ -86,7 +85,7 @@ class CreateProfileHandler(webapp2.RequestHandler):
 
 class ProfileHandler(webapp2.RequestHandler):
     def get(self):
-        p_template=jinja_env.get_template('profilepage.html')
+        p_template=jinja_env.get_template('beta1.html')
         user = users.get_current_user()
         cssi_user = CssiUser.get_by_id(user.user_id())
         cssi_user.bio= self.request.get('bio')
@@ -103,38 +102,28 @@ class ProfileHandler(webapp2.RequestHandler):
         'fb':cssi_user.fb,
         'insta':cssi_user.insta,
         'twitter':cssi_user.twitter,
-        'linkedin': cssi_user.linkedin
+        'linkedin': cssi_user.linkedin,
+        'bio':cssi_user.bio
         })
         self.response.write(html)
-
-app = webapp2.WSGIApplication([
-  ('/', MainHandler),
-  ('/createprofile', CreateProfileHandler),
-  ('/profile', ProfileHandler)
-        })
-        self.response.write(html)
-
-
-
-
-
-
-
-
-class PostHandler(webapp2.RequestHandler):
-    def post(self):
-        post_data = self.request.get("Post Box")
-        user_email= self.request.get("email_address")
-        post_box= PostData(email_address = user_email, text= post_data, time= datetime.datetime.now())
-        post_box.put()
-    def get (self):
-
-
 
 class PostData(ndb.Model):
     email_address = ndb.StringProperty()
     text = ndb.StringProperty()
     time = ndb.DateProperty()
+
+class PostHandler(webapp2.RequestHandler):
+    def post(self):
+        post_template= jinja_env.get_template("make-a-post.html")
+        posts= post_template.render({})
+        post_data = self.request.get("Post Box")
+        user_email= self.request.get("email_address")
+        post_box= PostData(email_address = user_email, text= post_data, time= datetime.datetime.now())
+        post_box.put()
+        self.response.write(posts)
+    def get (self):
+        pass
+
 
 class ListPostsHandler(webapp2.RequestHandler):
     def get(self):
@@ -144,16 +133,11 @@ class ListPostsHandler(webapp2.RequestHandler):
             self.response.out.write(post.email_address + post.text + str(post.time))
             self.response.out.write('<br>')
 
-
-
-
-
-
-    # save to to MainHandl
-        # add timestamp
-
-
-
+class MainPageHandler(webapp2.RequestHandler) :
+    def get(self):
+        mainpage_template= jinja_env.get_template("mainpage.html")
+        mainpage=mainpage_template.render({})
+        self.response.write(mainpage)
 
 app = webapp2.WSGIApplication([
   ('/', MainHandler),
@@ -161,5 +145,5 @@ app = webapp2.WSGIApplication([
   ('/profile', ProfileHandler),
   ('/postbox', PostHandler),
   ('/listposts', ListPostsHandler),
->>>>>>> 87415cdad4ec84a460fdfbac084ce5f0e954cb1d
+
 ], debug=True)
