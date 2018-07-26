@@ -125,10 +125,6 @@ class PostHandler(webapp2.RequestHandler):
         user_email= self.request.get("email_address")
         time = datetime.now()
         post_box= PostData(email_address = user_email, text= post_data, time=time)
-
-
-        # now= datetime.now()
-        # print '%02d/%02d/%04d %02d:%02d:%02d' % (now.month, now.day, now.year, now.hour, now.minute, now.second)
         post_box.put()
         return webapp2.redirect("/listposts")
 
@@ -143,8 +139,11 @@ class ListPostsHandler(webapp2.RequestHandler):
         all_posts = all_posts_query.fetch()
         for post in all_posts:
             ctime = '%02d/%02d/%04d %02d:%02d:%02d' % (post.time.month, post.time.day, post.time.year, post.time.hour, post.time.minute, post.time.second)
-            self.response.out.write(post.email_address + "     " + post.text + "     " + ctime)
-
+            self.response.out.write(post.email_address + "     " + post.text + "     ")
+            self.response.out.write('<br>')
+            self.response.out.write(ctime)
+            self.response.out.write("    ")
+            self.response.out.write('<br>')
             self.response.out.write('<br>')
 
 class MainPageHandler(webapp2.RequestHandler):
