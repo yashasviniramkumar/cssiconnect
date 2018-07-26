@@ -1,18 +1,23 @@
 .PostBox{
   height: 150px;
   width: 350px;
-  font-size: 14pt;
+  font-size: 12pt;
 }
 .PostHeader{
   margin-right:0px;
   float:center;
-  color:red;
+  color:black;
 }
 
 .PostButton{
   margin-right:25px;
   float:right;
-  height: 60px;
-  width: 90px;
-  font-size: 25pt
+  height: 28px;
+  width: 46px;
+  font-size: 14px;
+  font-family:"Montserrat";
+}
+
+body{
+  font-family: "Montserrat";
 }
