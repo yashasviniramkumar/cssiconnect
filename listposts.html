@@ -7,8 +7,8 @@
     <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
   <body>
       {% for post in all_posts %}
-      <p> Post: {{post.text}} <br>
-     Name: {{post.fullname}} </p>
+    <p class ="thepost"> Post: {{post.text}} <br>
+     Name: {{post.fullname}} </p> <br>
       {% endfor %}
 
   </body>
@@ -19,6 +19,12 @@
     font-family: "Montserrat";
     text-align: center;
     background:#cecaca;
+  }
+
+  .thepost{
+    border-style:solid;
+    border-width: thin;
+    display: inline-block;
   }
   </style>
 </html>
